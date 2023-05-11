@@ -21,6 +21,7 @@
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
+//พงศภัค
 #include "stdio.h"
 #include "string.h"
 /* USER CODE END Includes */
@@ -342,7 +343,6 @@ void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart){
 //		sprintf((char*)TxBuffer,"Received : %s\r\n",RxBuffer);
 
 	  HAL_UART_Transmit_IT(&huart2, TxBuffer, strlen((char*)TxBuffer));
-
 
 	  HAL_UART_Receive_IT(&huart2, RxBuffer, 1);
 	}
