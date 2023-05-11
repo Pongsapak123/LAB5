@@ -115,15 +115,10 @@ int main(void)
 
 //  uint8_t TEXT[] = "HELLO FIBO"; // 10+1 have \0
 //  HAL_UART_Transmit(&huart2, TEXT, 11, 10);
-  sprintf((char*)TxBuffer,"\n\n\n\n\n\n\n\r==========Main Menu==========\r\n");
-  HAL_UART_Transmit_IT(&huart2, TxBuffer, strlen((char*)TxBuffer));
 
-  sprintf((char*)TxBuffer,"Press 0 : Led Control\r\n");
-  HAL_UART_Transmit_IT(&huart2, TxBuffer, strlen((char*)TxBuffer));
-
-  sprintf((char*)TxBuffer,"Press 1 : ButtonStatus\r\n");
-    HAL_UART_Transmit_IT(&huart2, TxBuffer, strlen((char*)TxBuffer));
   UARTInterruptConfig();
+  sprintf((char*)TxBuffer,"\n\n\n\n\n\n\n\r===0=======Main Menu==========\r\nPress 0 : Led Control\r\nPress 1 : ButtonStatus\r\n=============================");
+  HAL_UART_Transmit_IT(&huart2, TxBuffer, strlen((char*)TxBuffer));
 
 //  state_t state = STATE_MAIN_MENU;
   /* USER CODE END 2 */
@@ -141,11 +136,11 @@ int main(void)
 			default:
 			case 0:
 				if(RxBuffer[0] == 48){ //0
-					sprintf((char*)TxBuffer,"\n\n\n\n\n\n\r\n==========Menu 0==========\r\n%d",hz);
+					sprintf((char*)TxBuffer,"\n\n\n\n\n\n\r\n==========LED Control==========\r\n HZ : %d \r\n Press a To Speed Up +1Hz \r\n Press s To Speed Up -1Hz \r\n Press d To On/Off \r\n Press x To Back to MainMenu \r\n=============================",hz);
 					HAL_UART_Transmit_IT(&huart2, TxBuffer, strlen((char*)TxBuffer));
 					STATE = 1;
 				}else if (RxBuffer[0] == 49) { //1
-					sprintf((char*)TxBuffer,"\n\n\n\n\n\n\r\n==========Menu 1==========\r\n%d",HAL_GPIO_ReadPin(LD2_GPIO_Port, LD2_Pin));
+					sprintf((char*)TxBuffer,"\n\n\n\n\n\n\r\n==========Button Status==========\r\n ButtonStatus : %d\r\n Press x To Back to MainMenu \r\n=============================",HAL_GPIO_ReadPin(LD2_GPIO_Port, LD2_Pin));
 					HAL_UART_Transmit_IT(&huart2, TxBuffer, strlen((char*)TxBuffer));
 					STATE = 2;
 				}else{
@@ -157,26 +152,26 @@ int main(void)
 			case 1:
 				if(RxBuffer[0] == 97){ //a
 					hz = hz + 1;
-					sprintf((char*)TxBuffer,"\n\n\n\n\n\n\r\n==========Menu 0==========\r\n%d",hz);
+					sprintf((char*)TxBuffer,"\n\n\n\n\n\n\r\n==========LED Control==========\r\n HZ : %d \r\n Press a To Speed Up +1Hz \r\n Press s To Speed Up -1Hz \r\n Press d To On/Off \r\n Press x To Back to MainMenu \r\n=============================",hz);
 					HAL_UART_Transmit_IT(&huart2, TxBuffer, strlen((char*)TxBuffer));
 				}else if (RxBuffer[0] == 115) { // s
 					hz = hz - 1;
 					if(hz<=0){hz=0;}
-					sprintf((char*)TxBuffer,"\n\n\n\n\n\n\r\n==========Menu 0==========\r\n%d",hz);
+					sprintf((char*)TxBuffer,"\n\n\n\n\n\n\r\n==========LED Control==========\r\n HZ : %d \r\n Press a To Speed Up +1Hz \r\n Press s To Speed Up -1Hz \r\n Press d To On/Off \r\n Press x To Back to MainMenu \r\n=============================",hz);
 					HAL_UART_Transmit_IT(&huart2, TxBuffer, strlen((char*)TxBuffer));
 				}else if (RxBuffer[0] == 100) { // d
-					if(led_state==1){led_state=0;}
+					if(led_state==1){led_state=0; HAL_GPIO_WritePin(LD2_GPIO_Port, LD2_Pin, RESET);}
 					else if (led_state==0) {led_state=1;}
 
-					if(led_state == 0){
-						hz_prev = hz;
-						hz = 0;
-					}else if(led_state == 1){
-						hz = hz_prev;
-					}
+//					if(led_state == 0){
+//						hz_prev = hz;
+//						hz = 0;
+//					}else if(led_state == 1){
+//						hz = hz_prev;
+//					}
 //					HAL_GPIO_WritePin(LD2_GPIO_Port, LD2_Pin, RESET);
 				}else if (RxBuffer[0] == 120) { // x
-					sprintf((char*)TxBuffer,"\n\n\n\n\n\n\r\n==========Choose 0/1==========\r\n");
+					sprintf((char*)TxBuffer,"\n\n\n\n\n\n\n\r==========Main Menu==========\r\nPress 0 : Led Control\r\nPress 1 : ButtonStatus\r\n=============================");
 					HAL_UART_Transmit_IT(&huart2, TxBuffer, strlen((char*)TxBuffer));
 					STATE = 0;
 				}else{
@@ -187,11 +182,11 @@ int main(void)
 
 			case 2:
 				if(RxBuffer[0] == 120){ // x
-					sprintf((char*)TxBuffer,"\n\n\n\n\n\n\r\n==========Choose 0/1==========\r\n");
+					sprintf((char*)TxBuffer,"\n\n\n\n\n\n\n\r==========Main Menu==========\r\nPress 0 : Led Control\r\nPress 1 : ButtonStatus\r\n=============================");
 					HAL_UART_Transmit_IT(&huart2, TxBuffer, strlen((char*)TxBuffer));
 					STATE = 0;
 				}else if(HAL_GPIO_ReadPin(LD2_GPIO_Port, LD2_Pin)==0){
-					sprintf((char*)TxBuffer,"\n\n\n\n\n\n\r\n==========Menu 1==========\r\n%d",HAL_GPIO_ReadPin(LD2_GPIO_Port, LD2_Pin));
+					sprintf((char*)TxBuffer,"\n\n\n\n\n\n\r\n==========Button Status==========\r\n ButtonStatus : %d\r\n Press x To Back to MainMenu \r\n=============================",HAL_GPIO_ReadPin(LD2_GPIO_Port, LD2_Pin));
 					HAL_UART_Transmit_IT(&huart2, TxBuffer, strlen((char*)TxBuffer));
 				}
 				else{
@@ -201,9 +196,14 @@ int main(void)
 			break;
 			  }
 	  }
+
 	  input = '\0';
+
+	  strcpy(TxBuffer, "\0");
 	  prev_input = input;
-	  LedTask();
+	  if(led_state == 1){
+		  LedTask();
+	  }
   /* USER CODE END 3 */
   }
 }
@@ -337,7 +337,6 @@ void UARTInterruptConfig(){
 void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart){
 
 	if(huart == &huart2){
-
 		RxBuffer[1] = '\0';
 		input = RxBuffer[0];
 //		sprintf((char*)TxBuffer,"Received : %s\r\n",RxBuffer);
